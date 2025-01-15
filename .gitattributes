@@ -1,2 +1,169 @@
 # Auto detect text files and perform LF normalization
-* text=auto
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Stopwatch</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(-45deg, #1e3c72, #2a5298, #6b9ac4, #b3cde0);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.app.goo.gl/C4Q9218F9YPbpGo49'); /* Placeholder for clock pattern */
+            background-size: 150px;
+            background-repeat: repeat;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        /* Stopwatch Container */
+        .stopwatch-container {
+            text-align: center;
+            background: rgba(30, 30, 30, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 1px 5px rgba(255, 255, 255, 0.1);
+            transform: scale(1);
+            transition: transform 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+        .stopwatch-container:hover {
+            transform: scale(1.05);
+        }
+
+        /* Title */
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Time Display */
+        #time-display {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #4caf50;
+            text-shadow: 0 2px 5px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Buttons */
+        .buttons button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, background 0.3s;
+        }
+        .buttons button:hover {
+            transform: translateY(-2px);
+        }
+        .buttons button:nth-child(1) { background: #28a745; }
+        .buttons button:nth-child(2) { background: #ffc107; }
+        .buttons button:nth-child(3) { background: #dc3545; }
+        .buttons button:nth-child(4) { background: #007bff; }
+
+        /* Lap List */
+        #laps {
+            margin-top: 20px;
+            padding: 0;
+            list-style: none;
+        }
+        #laps li {
+            background: #444;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch-container">
+        <div class="title">Stopwatch</div>
+        <h1 id="time-display">00:00:00.000</h1>
+        <div class="buttons">
+            <button onclick="startStopwatch()">Start</button>
+            <button onclick="pauseStopwatch()">Pause</button>
+            <button onclick="resetStopwatch()">Reset</button>
+            <button onclick="recordLap()">Record Lap</button>
+        </div>
+        <ul id="laps"></ul>
+    </div>
+
+    <script>
+        let timer;
+        let milliseconds = 0;
+        let running = false;
+
+        function startStopwatch() {
+            if (!running) {
+                running = true;
+                timer = setInterval(() => {
+                    milliseconds += 10;
+                    const date = new Date(milliseconds);
+                    const hours = String(date.getUTCHours()).padStart(2, '0');
+                    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+                    const millis = String(date.getUTCMilliseconds()).padStart(3, '0');
+                    document.getElementById('time-display').textContent = `${hours}:${minutes}:${seconds}.${millis}`;
+                }, 10);
+            }
+        }
+
+        function pauseStopwatch() {
+            running = false;
+            clearInterval(timer);
+        }
+
+        function resetStopwatch() {
+            running = false;
+            clearInterval(timer);
+            milliseconds = 0;
+            document.getElementById('time-display').textContent = '00:00:00.000';
+            document.getElementById('laps').innerHTML = '';
+        }
+
+        function recordLap() {
+            const time = document.getElementById('time-display').textContent;
+            const lapItem = document.createElement('li');
+            lapItem.textContent = `Lap ${document.getElementById('laps').childElementCount + 1}: ${time}`;
+            document.getElementById('laps').appendChild(lapItem);
+        }
+    </script>
+</body>
+</html>
+
